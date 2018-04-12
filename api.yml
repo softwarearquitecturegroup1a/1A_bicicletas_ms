@@ -1,0 +1,198 @@
+#Test with: http://editor.swagger.io/
+
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Microservicio para Bicicletas
+  description: Java (Play Framework) + MySQL
+  license:
+    name: Software Architecture 2018-I
+host: 192.168.99.102:3004
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /bicicletas:
+    post:
+      summary: Creates a new Bicicleta
+      operationId: createBicicleta
+      parameters:
+        - name: bicicleta
+          in: body
+          required: true
+          description: Bicicleta Object
+          schema:
+            $ref: '#/definitions/BicicletaInput'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    get:
+      summary: Returns all Bicicletas
+      operationId: getAllBicicletas
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/BicicletasList'
+        '406':
+          description: Not Acceptable (Invalid Params)
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /bicicletas/{serial}:
+    get:
+      summary: Returns a Bicicleta with the given serial
+      operationId: getBicicletaById
+      parameters:
+        - name: serial
+          in: path
+          description: The serial of the Bicileta to be returned
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/Bicicleta'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '406':
+            description: Not Acceptable (Invalid Params)
+            schema:
+              $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+    patch:
+      summary: Updates a bicicleta with the given serial
+      operationId: updateBicicleta
+      parameters:
+        - name: serial
+          in: path
+          description: The serial of the bicicleta to be updated
+          required: true
+          type: integer
+        - name: bicicleta
+          in: body
+          required: true
+          description: Bicicleta Object
+          schema:
+            $ref: '#/definitions/BicicletaInput'
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '406':
+            description: Not Acceptable (Invalid Params)
+            schema:
+              $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+    delete:
+      summary: Deletes a bicicleta with the given serial
+      operationId: deleteBicicleta
+      parameters:
+        - name: serial
+          in: path
+          description: The serial of the bicicleta to be deleted
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '406':
+            description: Not Acceptable (Invalid Params)
+            schema:
+              $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+definitions:
+
+  # bicicletas
+  Bicicleta:
+    type: object
+    properties:
+      serial:
+        type: integer
+      marca:
+        type: string
+      color:
+        type: string
+      ubicacion:
+        type: string
+      estado:
+        type: string        
+
+  BicicletaInput:
+    type: object
+    properties:
+      serial:
+        type: integer
+      marca:
+        type: string
+      color:
+        type: string
+      ubicacion:
+        type: string
+      estado:
+        type: string        
+
+  BicicletasList:
+    type: object
+    required:
+      - total
+      - list
+    properties:
+      total:
+        type: number
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/Bicicleta'
+
+# Errors
+  ErrorModel:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      message:
+        type: string
+      code:
+        type: number
+      description:
+        type: object
