@@ -77,21 +77,22 @@ public class BicisController extends Controller {
         JsonNode json = request().body().asJson();
 
         if(json.has("serial"))
-            bicicleta.serial = json.findValue("serial").bigIntegerValue();
+            bicicleta.setSerial( json.findValue("serial").bigIntegerValue() );
         if (json.has("marca"))
-            bicicleta.marca = json.findValue("marca").textValue();
+            bicicleta.setMarca( json.findValue("marca").textValue() );
         if (json.has("color"))
-            bicicleta.color =  json.findValue("color").textValue();
+            bicicleta.setColor( json.findValue("color").textValue() );
         if (json.has("ubicacion"))
-            bicicleta.ubicacion = json.findValue("ubicacion").textValue();
+            bicicleta.setUbicacion (json.findValue("ubicacion").textValue() );
         if (json.has("estado"))
-            bicicleta.estado = json.findValue("estado").textValue();
+            bicicleta.setEstado ( json.findValue("estado").textValue() );
 
         return bicicleta;
     }
 
+
     // Realiza validaciones
-    private boolean bicicletaValida(Bicicleta bicicleta){
+    private boolean bicicletaValida(Bicicleta bicicleta) {
         if(bicicleta.serial == null || bicicleta.serial.signum() < 1 )
             return false;
 
